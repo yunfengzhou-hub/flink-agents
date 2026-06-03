@@ -23,6 +23,14 @@ on:
   pull_request:
     branches: [ main, 'release-*' ]
   workflow_dispatch:
+    inputs:
+      action-api-key:
+        description: 'API key for the OpenAI-compatible chat model (e.g. DashScope)'
+        required: false
+      action-base-url:
+        description: 'Base URL for the OpenAI-compatible chat model'
+        required: false
+        default: 'https://dashscope.aliyuncs.com/compatible-mode/v1'
 
 jobs:
   lint:
@@ -192,7 +200,8 @@ jobs:
         run: bash tools/start_ollama_server.sh
       - name: Run Python IT
         env:
-          ACTION_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          ACTION_API_KEY: ${{ inputs.action-api-key }}
+          ACTION_BASE_URL: ${{ inputs.action-base-url }}
         run: tools/ut.sh -p -e -f ${{ matrix.flink-version }}
 
   java_it_tests:
@@ -300,6 +309,8 @@ jobs:
       - name: Run e2e tests
         env:
           LOG_LEVEL: INFO
+          ACTION_API_KEY: ${{ inputs.action-api-key }}
+          ACTION_BASE_URL: ${{ inputs.action-base-url }}
         run: |
           export ES_HOST="http://localhost:9200"
           export MILVUS_URI="http://localhost:19530"
