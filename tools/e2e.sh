@@ -16,6 +16,27 @@
 #
 
 DEFAULT_FLINK_VERSION="2.2"
+FLINK_VERSION="${DEFAULT_FLINK_VERSION}"
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -f|--flink)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                echo "Error: -f requires a version argument (e.g., -f 1.20)" >&2
+                exit 1
+            fi
+            FLINK_VERSION="$2"
+            shift
+            ;;
+        *)
+            echo "Error: Unknown option '$1'" >&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+export FLINK_VERSION
 
 function run_test {
   local description="$1"
@@ -153,7 +174,7 @@ if [[ ! -d "$python_dir" ]]; then
 fi
 
 cd "$python_dir"
-uv pip install apache-flink~=${DEFAULT_FLINK_VERSION}.0
+uv pip install apache-flink~=${FLINK_VERSION}.0
 
 export JVM_ARGS="${JVM_ARGS} --add-exports java.base/jdk.internal.vm=ALL-UNNAMED"
 

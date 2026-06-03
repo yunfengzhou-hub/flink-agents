@@ -233,16 +233,30 @@ jobs:
         run: tools/ut.sh -j -e -f ${{ matrix.flink-version }}
 
   cross_language_tests:
-    name: cross-language [${{ matrix.os }}] [python-${{ matrix.python-version}}] [java-${{ matrix.java-version}}]
+    name: cross-language [${{ matrix.os }}] [python-${{ matrix.python-version}}] [java-${{ matrix.java-version}}] [flink-${{ matrix.flink-version }}]
     runs-on: ${{ matrix.os }}
     env:
       SKIP_SPOTLESS_CHECK: true
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-latest' ]
-        python-version: [ '3.12' ]
-        java-version: [ '21' ]
+        include:
+          - os: 'ubuntu-latest'
+            python-version: '3.11'
+            java-version: '17'
+            flink-version: '1.20'
+          - os: 'ubuntu-latest'
+            python-version: '3.11'
+            java-version: '21'
+            flink-version: '2.0'
+          - os: 'ubuntu-latest'
+            python-version: '3.12'
+            java-version: '21'
+            flink-version: '2.1'
+          - os: 'ubuntu-latest'
+            python-version: '3.12'
+            java-version: '21'
+            flink-version: '2.2'
     steps:
       - uses: actions/checkout@v4
       # Free disk space to ensure Elasticsearch has sufficient space for indexing operations
@@ -289,7 +303,7 @@ jobs:
         run: |
           export ES_HOST="http://localhost:9200"
           export MILVUS_URI="http://localhost:19530"
-          tools/e2e.sh
+          tools/e2e.sh -f ${{ matrix.flink-version }}
       - name: Stop Milvus
         if: always()
         run: docker compose -f tools/docker/milvus/docker-compose.yml down -v

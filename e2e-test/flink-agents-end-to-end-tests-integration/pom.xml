@@ -29,11 +29,6 @@ under the License.
     <name>Flink Agents : E2E Tests: Integration</name>
 
     <properties>
-        <flink.1.20.version>1.20.4</flink.1.20.version>
-        <flink.2.0.version>2.0.2</flink.2.0.version>
-        <flink.2.1.version>2.1.2</flink.2.1.version>
-        <flink.2.2.version>2.2.1</flink.2.2.version>
-
         <flink.version>${flink.2.2.version}</flink.version>
         <flink.agents.dist.artifactId>flink-agents-dist-flink-2.2</flink.agents.dist.artifactId>
     </properties>

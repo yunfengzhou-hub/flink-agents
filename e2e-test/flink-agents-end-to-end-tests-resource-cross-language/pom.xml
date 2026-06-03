@@ -73,6 +73,52 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- Flink 1.20 Profile -->
+        <profile>
+            <id>flink-1.20</id>
+            <properties>
+                <flink.version>${flink.1.20.version}</flink.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                    <version>${log4j2.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                    <version>${log4j2.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                    <version>${log4j2.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- Flink 2.0 Profile -->
+        <profile>
+            <id>flink-2.0</id>
+            <properties>
+                <flink.version>${flink.2.0.version}</flink.version>
+            </properties>
+        </profile>
+
+        <!-- Flink 2.1 Profile -->
+        <profile>
+            <id>flink-2.1</id>
+            <properties>
+                <flink.version>${flink.2.1.version}</flink.version>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <!--

@@ -29,8 +29,13 @@ echo "Root directory: $root_dir"
 # Run all tests in the resource-cross-language module using Maven
 cd "$root_dir/e2e-test/flink-agents-end-to-end-tests-resource-cross-language"
 
-echo "Running all tests in resource-cross-language module..."
-mvn -T16 --batch-mode --no-transfer-progress test -Dsurefire.rerunFailingTestsCount=2
+PROFILE_FLAG=""
+if [[ -n "${FLINK_VERSION}" && "${FLINK_VERSION}" != "2.2" ]]; then
+    PROFILE_FLAG="-Pflink-${FLINK_VERSION}"
+fi
+
+echo "Running all tests in resource-cross-language module (Flink ${FLINK_VERSION:-default})..."
+mvn -T16 --batch-mode --no-transfer-progress test -Dsurefire.rerunFailingTestsCount=2 ${PROFILE_FLAG}
 
 ret=$?
 if [ "$ret" != "0" ]; then
