@@ -24,8 +24,6 @@ import org.apache.flink.agents.plan.actions.Action;
 import org.apache.flink.agents.runtime.context.JavaRunnerContextImpl;
 import org.apache.flink.agents.runtime.python.utils.PythonActionExecutor;
 
-import java.util.Collections;
-
 import static org.apache.flink.util.Preconditions.checkState;
 
 /**
@@ -83,7 +81,8 @@ public class JavaActionTask extends ActionTask {
                                     javaRunnerContext.getContinuationContext(),
                                     () -> {
                                         try {
-                                            action.getExec().call(event, runnerContext);
+                                            action.getExec()
+                                                    .call(getDelegateEvent(), runnerContext);
                                         } catch (Exception e) {
                                             throw new RuntimeException(e);
                                         }
@@ -98,7 +97,10 @@ public class JavaActionTask extends ActionTask {
                     runnerContext.drainEventsAtActionFinish(event.getSourceTimestamp()),
                     null);
         } else {
-            return new ActionTaskResult(false, Collections.emptyList(), this);
+            // A suspended action may already have emitted events (e.g. a bootstrapped internal
+            // sub-agent call): drain them so the operator dispatches them while the action waits.
+            return new ActionTaskResult(
+                    false, runnerContext.drainEvents(event.getSourceTimestamp()), this);
         }
     }
 }
